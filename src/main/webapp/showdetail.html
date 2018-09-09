@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>博文详细</title>
+<link type="image/icon" rel="shortcut icon" href="images/head.gif"/>
+<style type="text/css">
+#title,#info{
+	text-align:center;
+}
+
+#info>span{
+	margin-right: 100px;
+}
+
+#content{
+	margin: 0px auto;;
+	width: 1000px;
+}
+</style>
+<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+<script type="text/javascript">
+$(function(){
+	var bid=location.hash.replace("#", "");
+	
+	var reg=/\d+/;
+	if(bid.match(reg)){
+		$.get("findByBid",{bid:bid},function(data){
+			$("#title").html(data.title);
+			$("#author").html(data.leaguer.lname);
+			$("#bdate").html(data.bdate);
+			$("#views").html(data.views);
+			$("#content").html(data.content);
+		},"json");
+	}
+});
+</script>
+</head>
+<body>
+<h2 id="title"></h2>
+<p id="info">作者：<span id="author"></span>发布日期：<span id="bdate"></span>浏览次数：<span id="views"></span></p>
+<br/><hr /><br/>
+<div id="content">
+
+</div>
+</body>
+</html>

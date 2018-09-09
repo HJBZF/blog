@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zf.blog.mapper.LeaguerMapper">
+	<insert id="leaguerReg" parameterType="Leaguer">
+		<selectKey keyProperty="lid" keyColumn="lid" resultType="Integer" order="BEFORE">
+			select seq_leaguer_lid.nextval from dual
+		</selectKey>
+		insert into leaguer values(#{lid},#{lname},#{pwd},#{email},#{photo},1)
+	</insert>
+	
+	<!-- <update id="updataPhoto" parameterType="Map">
+		update leaguer set photo=#{photo} where lid=#{lid}
+	</update> -->
+	<update id="updatePhoto" parameterType="Map">
+		update leaguer set photo=#{photo} where lid=#{lid}
+	</update>
+	
+	<select id="leaguerLogin" parameterType="Map" resultType="Leaguer">
+		select lid,lname,pwd,email,photo,status from leaguer where (lname=#{account} or email=#{account}) and pwd=#{pwd} and status!=0
+	</select>
+</mapper>

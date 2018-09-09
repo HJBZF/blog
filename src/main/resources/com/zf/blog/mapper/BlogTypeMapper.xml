@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.blog.mapper.BlogTypeMapper">
+	<insert id="add" parameterType="BlogType">
+		<selectKey keyProperty="tid" keyColumn="tid" resultType="Integer" order="BEFORE">
+			select seq_blogType_tid.nextval from dual
+		</selectKey>
+		insert into blogType values(#{tid},#{tname})
+	</insert>
+	
+	<select id="findAll" resultType="BlogType">
+		select tid,tname from blogType
+	</select>
+</mapper>

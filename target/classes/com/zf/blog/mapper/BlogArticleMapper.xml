@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zf.blog.mapper.BlogArticleMapper">
+	<!-- 添加 -->
+	<insert id="add" parameterType="BlogArticle">
+		<selectKey keyProperty="bid" keyColumn="bid" resultType="Integer" order="BEFORE">
+			select seq_blogArticle_bid.nextval from dual
+		</selectKey>
+		insert into blogArticle values(#{bid},#{tid},#{title},to_date(#{bdate},'yyyy-mm-dd HH24:mi:ss'),#{lid},#{content},0,0)
+	</insert>
+	
+	<!-- 分页查询 -->
+	<select id="findByPage" parameterType="Map" resultMap="articleInfo">
+		select * from(select a.*,rownum rn from(
+			select bid,a.tid,a.lid,tname,lname,photo,title,content,views from blogArticle a,leaguer l,blogType t where a.tid=t.tid and a.lid=l.lid order by bid) a
+			where rownum&lt;=#{pageNo}*#{pageSize}) where rn>(#{pageNo}-1)*#{pageSize}
+	</select>
+	
+	<resultMap type="BlogArticle" id="articleInfo" autoMapping="true">
+		<id property="bid" column="bid"/>
+		
+		<association property="blogType" javaType="BlogType" autoMapping="true">
+			<id property="tid" column="tid"/>
+		</association>
+		
+		<association property="leaguer" javaType="Leaguer" autoMapping="true">
+			<id property="lid" column="lid"/>
+		</association>
+	</resultMap>
+	
+	<!-- 查找findByBid -->
+	<select id="findByBid" parameterType="int" resultMap="articleInfo">
+		select bid,a.tid,a.lid,tname,lname,photo,title,content,views,to_char(bdate,'yyyy-mm-dd hh24:mi:ss') as bdate 
+		from blogArticle a,leaguer l,blogType t where a.tid=t.tid and a.lid=l.lid and bid=#{bid}
+	</select>
+	
+	<update id="updateViews" parameterType="int">
+		update blogArticle set views=views+1 where bid=#{bid}
+	</update>
+</mapper>
